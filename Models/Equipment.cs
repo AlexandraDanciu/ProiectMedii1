@@ -13,5 +13,6 @@ namespace ProiectMedii1.Models
         public decimal Price { get; set; }
         public int Piecies { get; set; }
         public string Availability {  get; set; }
+
     }
 }

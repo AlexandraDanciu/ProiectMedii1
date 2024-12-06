@@ -1,0 +1,43 @@
+﻿@page
+@model ProiectMedii1.Pages.Equipments.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Equipment</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Equipment.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Equipment.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Equipment.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Equipment.Price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Equipment.Piecies)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Equipment.Piecies)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Equipment.Availability)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Equipment.Availability)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Equipment.ID">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

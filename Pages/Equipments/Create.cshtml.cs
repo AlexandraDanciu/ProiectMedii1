@@ -10,7 +10,7 @@ using ProiectMedii1.Models;
 
 namespace ProiectMedii1.Pages.Equipments
 {
-    public class CreateModel : PageModel
+    public class CreateModel : EquipmentCategoriesPageModel
     {
         private readonly ProiectMedii1.Data.ProiectMedii1Context _context;
 
@@ -21,6 +21,9 @@ namespace ProiectMedii1.Pages.Equipments
 
         public IActionResult OnGet()
         {
+            var equipment = new Equipment();
+            equipment.EquipmentCategories = new List<EquipmentCategory>();
+            PopulateAssignedCategoryData(_context, equipment);
             return Page();
         }
 
@@ -28,16 +31,26 @@ namespace ProiectMedii1.Pages.Equipments
         public Equipment Equipment { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedCategories)
         {
-            if (!ModelState.IsValid)
+            var newEquipment = new Equipment(); 
+            if (selectedCategories != null) 
             {
-                return Page();
+                newEquipment.EquipmentCategories = new List<EquipmentCategory>(); 
+                foreach (var cat in selectedCategories)
+                { 
+                    var catToAdd = new EquipmentCategory
+                    { 
+                        CategoryID = int.Parse(cat) 
+                    };
+                    newEquipment.EquipmentCategories.Add(catToAdd);
+                }
             }
 
+            Equipment.EquipmentCategories = newEquipment.EquipmentCategories;
             _context.Equipment.Add(Equipment);
-            await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }
     }

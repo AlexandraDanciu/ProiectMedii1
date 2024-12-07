@@ -11,7 +11,7 @@ using ProiectMedii1.Models;
 
 namespace ProiectMedii1.Pages.Equipments
 {
-    public class EditModel : PageModel
+    public class EditModel : EquipmentCategoriesPageModel
     {
         private readonly ProiectMedii1.Data.ProiectMedii1Context _context;
 
@@ -30,48 +30,56 @@ namespace ProiectMedii1.Pages.Equipments
                 return NotFound();
             }
 
-            var equipment =  await _context.Equipment.FirstOrDefaultAsync(m => m.ID == id);
-            if (equipment == null)
+            Equipment = await _context.Equipment
+                .Include(b => b.EquipmentCategories)
+                    .ThenInclude(b => b.Category).AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (Equipment == null)
             {
                 return NotFound();
             }
-            Equipment = equipment;
+
+            PopulateAssignedCategoryData(_context, Equipment);
+
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedCategories)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
+            if (id == null)
+            { 
+                return NotFound();
             }
 
-            _context.Attach(Equipment).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EquipmentExists(Equipment.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+            var equipmentToUpdate = await _context.Equipment
+                .Include(i => i.EquipmentCategories)
+                    .ThenInclude(i => i.Category)
+                .FirstOrDefaultAsync(s => s.ID == id);
+            
+            if (equipmentToUpdate == null) 
+            { 
+                return NotFound(); 
             }
 
-            return RedirectToPage("./Index");
-        }
+            if (await TryUpdateModelAsync<Equipment>(
+                equipmentToUpdate,
+                "Equipment",
+                i => i.Name,
+                i => i.Price, 
+                i => i.Piecies, //pieces
+                i => i.Availability))
+            {
+                UpdateEquipmentCategories(_context, selectedCategories, equipmentToUpdate); 
+                await _context.SaveChangesAsync(); 
+                return RedirectToPage("./Index");
+            }
 
-        private bool EquipmentExists(int id)
-        {
-            return _context.Equipment.Any(e => e.ID == id);
+            UpdateEquipmentCategories(_context, selectedCategories, equipmentToUpdate);
+            PopulateAssignedCategoryData(_context, equipmentToUpdate); 
+            return Page();
         }
     }
 }

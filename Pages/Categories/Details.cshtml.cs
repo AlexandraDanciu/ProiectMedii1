@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using ProiectMedii1.Data;
 using ProiectMedii1.Models;
 
-namespace ProiectMedii1.Pages.Equipments
+namespace ProiectMedii1.Pages.Categories
 {
-    public class DetailsModel : EquipmentCategoriesPageModel
+    public class DetailsModel : PageModel
     {
         private readonly ProiectMedii1.Data.ProiectMedii1Context _context;
 
@@ -19,7 +19,7 @@ namespace ProiectMedii1.Pages.Equipments
             _context = context;
         }
 
-        public Equipment Equipment { get; set; } = default!;
+        public Category Category { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,19 +28,14 @@ namespace ProiectMedii1.Pages.Equipments
                 return NotFound();
             }
 
-            var equipment = await _context.Equipment
-                .Include(b => b.EquipmentCategories).ThenInclude(b => b.Category)
-                .AsNoTracking()
-                .OrderBy(b => b.Name)
-                .FirstOrDefaultAsync(m => m.ID == id);
-
-            if (equipment == null)
+            var category = await _context.Category.FirstOrDefaultAsync(m => m.ID == id);
+            if (category == null)
             {
                 return NotFound();
             }
             else
             {
-                Equipment = equipment;
+                Category = category;
             }
             return Page();
         }

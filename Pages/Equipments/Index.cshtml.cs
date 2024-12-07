@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,11 +20,27 @@ namespace ProiectMedii1.Pages.Equipments
             _context = context;
         }
 
-        public IList<Equipment> Equipment { get;set; } = default!;
-
-        public async Task OnGetAsync()
+        public IList<Equipment> Equipment { get; set; } = default!;
+        public EquipmentData EquipmentD { get; set; }
+        public int EquipmentID { get; set; }
+        public int CategoryID { get; set; }
+        public async Task OnGetAsync(int? id, int? categoryID)
         {
-            Equipment = await _context.Equipment.ToListAsync();
+            EquipmentD = new EquipmentData();
+            EquipmentD.Equipments = await _context.Equipment
+                .Include(b => b.EquipmentCategories)
+                    .ThenInclude(b => b.Category)
+                .AsNoTracking()
+                .OrderBy(b => b.Name)
+                .ToListAsync();
+
+            if (id != null)
+            {
+                EquipmentID = id.Value;
+                Equipment equipment = EquipmentD.Equipments
+                    .Where(i => i.ID == id.Value).Single();
+                EquipmentD.Categories = equipment.EquipmentCategories.Select(s => s.Category);
+            }
         }
     }
 }

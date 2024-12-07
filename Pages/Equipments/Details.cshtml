@@ -35,6 +35,18 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Equipment.Availability)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Equipment.EquipmentCategories)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                foreach (var category in Model.Equipment.EquipmentCategories)
+                {
+                    @category.Category.CategoryName <br />         //modificat sa nu apara nr categoriei     
+                    <br />
+                }
+            }
+        </dd>
     </dl>
 </div>
 <div>

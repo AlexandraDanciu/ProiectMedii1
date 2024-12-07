@@ -25,12 +25,21 @@
             <th>
                 @Html.DisplayNameFor(model => model.Equipment[0].Availability)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Equipment[0].EquipmentCategories)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Equipment) {
-        <tr>
+        @foreach (var item in Model.EquipmentD.Equipments)
+        {
+            string selectedRow = ""; 
+            if (item.ID == Model.EquipmentID)
+            {
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -42,6 +51,14 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Availability)
+            </td>
+            <td>
+                @{ 
+                    foreach (var category in item.EquipmentCategories) 
+                    {
+                            @category.Category.CategoryName <br />  //modificat sa nu apara nr categoriei
+                    } 
+                } 
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |

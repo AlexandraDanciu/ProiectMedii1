@@ -16,5 +16,7 @@ namespace ProiectMedii1.Data
 
         public DbSet<ProiectMedii1.Models.Equipment> Equipment { get; set; } = default!;
         public DbSet<ProiectMedii1.Models.Category> Category { get; set; } = default!;
+        public DbSet<ProiectMedii1.Models.Member> Member { get; set; } = default!;
+        public DbSet<ProiectMedii1.Models.Rental> Rental { get; set; } = default!;
     }
 }

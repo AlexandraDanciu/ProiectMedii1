@@ -17,6 +17,6 @@ namespace ProiectMedii1.Models
         public string Availability {  get; set; }
 
         public ICollection<EquipmentCategory>? EquipmentCategories { get; set; }
-
+        public ICollection<Rental>? Rental { get; set; }
     }
 }

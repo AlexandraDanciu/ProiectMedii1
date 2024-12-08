@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ProiectMedii1.Data;
+using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +9,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ProiectMedii1Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProiectMedii1Context") ?? throw new InvalidOperationException("Connection string 'ProiectMedii1Context' not found.")));
 
+
+builder.Services.AddDbContext<LibraryIdentityContext>(options =>
+
+options.UseSqlServer(builder.Configuration.GetConnectionString("ProiectMedii1Context") ?? throw new InvalidOperationException("Connectionstring 'ProiectMedii1Context' not found."))); 
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<LibraryIdentityContext>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

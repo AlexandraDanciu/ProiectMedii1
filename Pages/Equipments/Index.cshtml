@@ -10,11 +10,24 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Equipment Name / Category Name:
+            <input type="text" name="searchString" value="@Model.CurrentFilter" class="form-control" style="display:inline; width:300px;" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to full List</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"> 
                 @Html.DisplayNameFor(model => model.Equipment[0].Name)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Equipment[0].Price)
@@ -26,7 +39,9 @@
                 @Html.DisplayNameFor(model => model.Equipment[0].Availability)
             </th>
             <th>
+                 <a asp-page="./Index" asp-route-sortOrder="@Model.CategoryNameSort"> 
                 @Html.DisplayNameFor(model => model.Equipment[0].EquipmentCategories)
+                </a>
             </th>
             <th></th>
         </tr>

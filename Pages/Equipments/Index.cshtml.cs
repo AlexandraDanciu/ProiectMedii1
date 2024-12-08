@@ -24,8 +24,15 @@ namespace ProiectMedii1.Pages.Equipments
         public EquipmentData EquipmentD { get; set; }
         public int EquipmentID { get; set; }
         public int CategoryID { get; set; }
-        public async Task OnGetAsync(int? id, int? categoryID)
+        public string NameSort { get; set; }
+        public string CategoryNameSort { get; set; }
+        public string CurrentFilter { get; set; }
+        public async Task OnGetAsync(int? id, int? categoryID, string sortOrder, string searchString)
         {
+
+            NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            CategoryNameSort = sortOrder == "category" ? "category_desc" : "category";
+            CurrentFilter = searchString;
             EquipmentD = new EquipmentData();
             EquipmentD.Equipments = await _context.Equipment
                 .Include(b => b.EquipmentCategories)
@@ -34,12 +41,32 @@ namespace ProiectMedii1.Pages.Equipments
                 .OrderBy(b => b.Name)
                 .ToListAsync();
 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                EquipmentD.Equipments = EquipmentD.Equipments.Where(s => s.Name.Contains(searchString) || s.EquipmentCategories.Any(ec => ec.Category.CategoryName.Contains(searchString)));
+            }
             if (id != null)
             {
                 EquipmentID = id.Value;
                 Equipment equipment = EquipmentD.Equipments
                     .Where(i => i.ID == id.Value).Single();
                 EquipmentD.Categories = equipment.EquipmentCategories.Select(s => s.Category);
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    EquipmentD.Equipments = EquipmentD.Equipments.OrderByDescending(s => s.Name);
+                    break;
+                case "category":
+                    EquipmentD.Equipments = EquipmentD.Equipments.OrderBy(e => e.EquipmentCategories.FirstOrDefault().Category.CategoryName);
+                    break;
+                case "category_desc":
+                    EquipmentD.Equipments = EquipmentD.Equipments.OrderByDescending(e => e.EquipmentCategories.FirstOrDefault().Category.CategoryName);
+                    break;
+                default:
+                    EquipmentD.Equipments = EquipmentD.Equipments.OrderBy(e => e.Name);
+                    break;
             }
         }
     }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ProiectMedii1.Data;
 using ProiectMedii1.Models;
+using ProiectMedii1.Models.ViewModels;
 
 namespace ProiectMedii1.Pages.Categories
 {
@@ -21,9 +22,37 @@ namespace ProiectMedii1.Pages.Categories
 
         public IList<Category> Category { get;set; } = default!;
 
-        public async Task OnGetAsync()
+
+        public CategoryEquipmentData CategoryData { get; set; }
+        public int CategoryID { get; set; }
+
+        public async Task OnGetAsync(int? id)
         {
-            Category = await _context.Category.ToListAsync();
+            // Inițializăm ViewModel-ul cu categoriile
+            CategoryData = new CategoryEquipmentData();
+            CategoryData.Categories = await _context.Category
+                     .Include(i => i.EquipmentCategories) // Include tabela intermediară
+                         .ThenInclude(c => c.Equipment) // Include echipamentele din relația intermediară
+                     .OrderBy(i => i.CategoryName)
+                     .ToListAsync();
+
+            // Dacă o categorie este selectată
+            if (id != null)
+            {
+                CategoryID = id.Value;
+                var category = CategoryData.Categories
+                    .Where(c => c.ID == id.Value)
+                    .SingleOrDefault();
+
+                if (category != null)
+                {
+                    // Extrage echipamentele asociate categoriei
+                    CategoryData.Equipments = category.EquipmentCategories
+                        .Select(ec => ec.Equipment)
+                        .ToList();
+                }
+            }
+
         }
     }
 }

@@ -13,6 +13,7 @@ namespace ProiectMedii1.Models
         [Column(TypeName = "decimal(6, 2)")]
         [Range(0.01, 500)]
         public decimal Price { get; set; }
+        [Display(Name = "Pieces")]
         public int Piecies { get; set; } //pieces, but we'll keep it like that during the project
         public string Availability {  get; set; }
 

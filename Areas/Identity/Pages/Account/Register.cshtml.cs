@@ -82,6 +82,17 @@ namespace ProiectMedii1.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
+            [StringLength(100, MinimumLength = 2)]
+            public string FirstName { get; set; }
+
+            [Required]
+            [StringLength(100, MinimumLength = 2)]
+            public string LastName { get; set; }
+
+            [Required]
+            [Phone]
+            public string Phone { get; set; }
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -117,25 +128,39 @@ namespace ProiectMedii1.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await
-_signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             var user = CreateUser();
+
 
             await _userStore.SetUserNameAsync(user, Input.Email,
 CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email,
 CancellationToken.None);
-            var result = await _userManager.CreateAsync(user,
-Input.Password);
+           
+            if (user is ApplicationUser applicationUser)
+            {
+                applicationUser.FirstName = Input.FirstName;
+                applicationUser.LastName = Input.LastName;
+                applicationUser.Phone = Input.Phone; 
 
-            Member.Email = Input.Email;
-            _context.Member.Add(Member);
-            await _context.SaveChangesAsync();
+            }
+            var result = await _userManager.CreateAsync(user,Input.Password);
 
+
+           
             if (result.Succeeded)
             {
-                _logger.LogInformation("User created a new account with password."); 
-
+                _logger.LogInformation("User created a new account with password.");
+                var member = new Member
+                {
+                    Email = Input.Email,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    Phone = Input.Phone
+                };
+                _context.Member.Add(member);
+                await _context.SaveChangesAsync();
 
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await
@@ -157,11 +182,6 @@ WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", 
 
                     $"Please confirm your account by <a href = '{HtmlEncoder.Default.Encode(callbackUrl)}' > clicking here </ a >."); 
-
-
-
-
-
                     if(_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
                     return RedirectToPage("RegisterConfirmation", new
@@ -192,6 +212,12 @@ WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
+        }
+        public class ApplicationUser : IdentityUser
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Phone { get; set; }
         }
 
         private IUserEmailStore<IdentityUser> GetEmailStore()

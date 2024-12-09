@@ -11,11 +11,9 @@ namespace ProiectMedii1.Models
 
         public int? EquipmentID { get; set; }
         public Equipment? Equipment { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime ReturnDate { get; set; }
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime RentalDate { get; set; }
-
+        [DataType(DataType.DateTime)]
+        public DateTime ReturnDate { get; set; }
     }
 }

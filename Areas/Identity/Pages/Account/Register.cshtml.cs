@@ -152,6 +152,9 @@ CancellationToken.None);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
+
+                var role = await _userManager.AddToRoleAsync(user, "User");
+
                 var member = new Member
                 {
                     Email = Input.Email,
@@ -160,13 +163,13 @@ CancellationToken.None);
                     Phone = Input.Phone
                 };
                 _context.Member.Add(member);
-                await _context.SaveChangesAsync();
 
                 var userId = await _userManager.GetUserIdAsync(user);
-                var code = await
-_userManager.GenerateEmailConfirmationTokenAsync(user);
-                code =
-WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                await _context.SaveChangesAsync();
+
+
+                code =WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,

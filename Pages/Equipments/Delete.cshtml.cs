@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using ProiectMedii1.Models;
 
 namespace ProiectMedii1.Pages.Equipments
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : EquipmentCategoriesPageModel
     {
         private readonly ProiectMedii1.Data.ProiectMedii1Context _context;

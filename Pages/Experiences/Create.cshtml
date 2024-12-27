@@ -1,0 +1,64 @@
+﻿@page
+@model ProiectMedii1.Pages.Experiences.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Experience</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Experience.Title" class="control-label"></label>
+                <input asp-for="Experience.Title" class="form-control" />
+                <span asp-validation-for="Experience.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Experience.Location" class="control-label"></label>
+                <input asp-for="Experience.Location" class="form-control" />
+                <span asp-validation-for="Experience.Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Experience.EventDateTime" class="control-label"></label>
+                <input asp-for="Experience.EventDateTime" class="form-control" />
+                <span asp-validation-for="Experience.EventDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Experience.Duration" class="control-label"></label>
+                <input asp-for="Experience.Duration" class="form-control" />
+                <span asp-validation-for="Experience.Duration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Experience.MemberID" class="control-label"></label>
+                <select asp-for="Experience.MemberID" class="form-control" asp-items="ViewBag.MemberID"></select>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Experience.Description" class="control-label"></label>
+                <input asp-for="Experience.Description" class="form-control" />
+                <span asp-validation-for="Experience.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

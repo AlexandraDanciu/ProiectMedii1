@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using ProiectMedii1.Data;
 using ProiectMedii1.Models;
 
-namespace ProiectMedii1.Pages.Rentals
+namespace ProiectMedii1.Pages.Experiences
 {
     public class EditModel : PageModel
     {
@@ -21,7 +21,7 @@ namespace ProiectMedii1.Pages.Rentals
         }
 
         [BindProperty]
-        public Rental Rental { get; set; } = default!;
+        public Experience Experience { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,21 +29,15 @@ namespace ProiectMedii1.Pages.Rentals
             {
                 return NotFound();
             }
-            var equipmentList = _context.Equipment
-                .Select(e => new
-              {
-                  e.ID,
-                  EquipmentName = e.Name
-              }).ToList();
-
             var memberList = _context.Member
-                .Select(m => new
-                {
-                    m.ID,
-                    FullName = m.FirstName + " " + m.LastName // Numele complet al membrului
-                }).ToList();
+               .Select(m => new
+               {
+                   m.ID,
+                   FullName = m.FirstName + " " + m.LastName // Numele complet al membrului
+               })
+               .ToList();
 
-            ViewData["EquipmentID"] = new SelectList(equipmentList, "ID", "EquipmentName");
+            // Adăugarea listei în ViewData
             ViewData["MemberID"] = new SelectList(memberList, "ID", "FullName");
 
             return Page();
@@ -58,7 +52,7 @@ namespace ProiectMedii1.Pages.Rentals
                 return Page();
             }
 
-            _context.Attach(Rental).State = EntityState.Modified;
+            _context.Attach(Experience).State = EntityState.Modified;
 
             try
             {
@@ -66,7 +60,7 @@ namespace ProiectMedii1.Pages.Rentals
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RentalExists(Rental.ID))
+                if (!ExperienceExists(Experience.ID))
                 {
                     return NotFound();
                 }
@@ -79,9 +73,9 @@ namespace ProiectMedii1.Pages.Rentals
             return RedirectToPage("./Index");
         }
 
-        private bool RentalExists(int id)
+        private bool ExperienceExists(int id)
         {
-            return _context.Rental.Any(e => e.ID == id);
+            return _context.Experience.Any(e => e.ID == id);
         }
     }
 }

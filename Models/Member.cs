@@ -29,6 +29,8 @@ namespace ProiectMedii1.Models
             }
         }
         public ICollection<Rental>? Rentals { get; set; }
+       
+
 
     }
 }

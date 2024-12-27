@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using ProiectMedii1.Data;
 using ProiectMedii1.Models;
 
-namespace ProiectMedii1.Pages.Rentals
+namespace ProiectMedii1.Pages.Experiences
 {
     public class CreateModel : PageModel
     {
@@ -21,28 +22,25 @@ namespace ProiectMedii1.Pages.Rentals
 
         public IActionResult OnGet()
         {
-            var equipmentList = _context.Equipment .Select(e => new
-       {
-           e.ID,
-           EquipmentName = e.Name 
-       }).ToList();
-
+            // Preluarea listei de membri (ghizi)
             var memberList = _context.Member
                 .Select(m => new
                 {
                     m.ID,
                     FullName = m.FirstName + " " + m.LastName // Numele complet al membrului
-                }).ToList();
+                })
+                .ToList();
 
-            ViewData["EquipmentID"] = new SelectList(equipmentList, "ID", "EquipmentName");
+            // Adăugarea listei în ViewData
             ViewData["MemberID"] = new SelectList(memberList, "ID", "FullName");
 
             return Page();
-            
         }
 
+
+
         [BindProperty]
-        public Rental Rental { get; set; } = default!;
+        public Experience Experience { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -52,7 +50,7 @@ namespace ProiectMedii1.Pages.Rentals
                 return Page();
             }
 
-            _context.Rental.Add(Rental);
+            _context.Experience.Add(Experience);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
